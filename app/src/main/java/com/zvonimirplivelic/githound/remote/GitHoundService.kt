@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 interface GitHoundService {
     @GET("repositories")
-    suspend fun getRepositoriesList(): Response<GitRepoListResponse>
+    suspend fun getRepositoryList(): Response<GitRepoListResponse>
 
     @GET("users")
     suspend fun getAuthorDetails(
