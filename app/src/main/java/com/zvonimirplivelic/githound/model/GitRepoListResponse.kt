@@ -1,9 +1,9 @@
-package com.zvonimirplivelic.githound
+package com.zvonimirplivelic.githound.model
 
 
 import com.google.gson.annotations.SerializedName
 
-class GitRepoResponse : ArrayList<GitRepoResponseItem>(){
+class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>(){
     data class GitRepoResponseItem(
         @SerializedName("archive_url")
         val archiveUrl: String,

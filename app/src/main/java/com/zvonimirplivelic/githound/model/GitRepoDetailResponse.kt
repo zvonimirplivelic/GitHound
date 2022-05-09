@@ -1,4 +1,4 @@
-package com.zvonimirplivelic.githound
+package com.zvonimirplivelic.githound.model
 
 
 import com.google.gson.annotations.SerializedName
