@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.zvonimirplivelic.githound.R
 
-class SearchListFragment : Fragment() {
+class RepositoryDetailsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_search_list, container, false)
+        return inflater.inflate(R.layout.fragment_repository_details, container, false)
     }
 }
