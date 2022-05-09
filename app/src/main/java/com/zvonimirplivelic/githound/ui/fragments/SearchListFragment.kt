@@ -1,4 +1,4 @@
-package com.zvonimirplivelic.githound.ui
+package com.zvonimirplivelic.githound.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
