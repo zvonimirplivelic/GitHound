@@ -1,9 +1,12 @@
 package com.zvonimirplivelic.githound.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
-class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>(){
+@Parcelize
+class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>(), Parcelable {
     data class GitRepoResponseItem(
         @SerializedName("archive_url")
         val archiveUrl: String,

@@ -1,8 +1,11 @@
 package com.zvonimirplivelic.githound.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class GitRepoDetailResponse(
     @SerializedName("allow_forking")
     val allowForking: Boolean,
@@ -103,7 +106,7 @@ data class GitRepoDetailResponse(
     @SerializedName("milestones_url")
     val milestonesUrl: String,
     @SerializedName("mirror_url")
-    val mirrorUrl: Any?,
+    val mirrorUrl: String,
     @SerializedName("name")
     val name: String,
     @SerializedName("network_count")
@@ -149,9 +152,9 @@ data class GitRepoDetailResponse(
     @SerializedName("teams_url")
     val teamsUrl: String,
     @SerializedName("temp_clone_token")
-    val tempCloneToken: Any?,
+    val tempCloneToken: String?,
     @SerializedName("topics")
-    val topics: List<Any>,
+    val topics: List<String>,
     @SerializedName("trees_url")
     val treesUrl: String,
     @SerializedName("updated_at")
@@ -164,7 +167,8 @@ data class GitRepoDetailResponse(
     val watchers: Int,
     @SerializedName("watchers_count")
     val watchersCount: Int
-) {
+) : Parcelable {
+    @Parcelize
     data class License(
         @SerializedName("key")
         val key: String,
@@ -176,8 +180,9 @@ data class GitRepoDetailResponse(
         val spdxId: String,
         @SerializedName("url")
         val url: String
-    )
+    ): Parcelable
 
+    @Parcelize
     data class Owner(
         @SerializedName("avatar_url")
         val avatarUrl: String,
@@ -215,5 +220,5 @@ data class GitRepoDetailResponse(
         val type: String,
         @SerializedName("url")
         val url: String
-    )
+    ): Parcelable
 }

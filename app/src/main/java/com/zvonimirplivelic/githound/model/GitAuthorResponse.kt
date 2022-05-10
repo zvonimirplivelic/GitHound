@@ -1,13 +1,16 @@
 package com.zvonimirplivelic.githound.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class GitAuthorResponse(
     @SerializedName("avatar_url")
     val avatarUrl: String,
     @SerializedName("bio")
-    val bio: Any?,
+    val bio: String,
     @SerializedName("blog")
     val blog: String,
     @SerializedName("company")
@@ -15,7 +18,7 @@ data class GitAuthorResponse(
     @SerializedName("created_at")
     val createdAt: String,
     @SerializedName("email")
-    val email: Any?,
+    val email: String?,
     @SerializedName("events_url")
     val eventsUrl: String,
     @SerializedName("followers")
@@ -31,7 +34,7 @@ data class GitAuthorResponse(
     @SerializedName("gravatar_id")
     val gravatarId: String,
     @SerializedName("hireable")
-    val hireable: Any?,
+    val hireable: String?,
     @SerializedName("html_url")
     val htmlUrl: String,
     @SerializedName("id")
@@ -68,4 +71,4 @@ data class GitAuthorResponse(
     val updatedAt: String,
     @SerializedName("url")
     val url: String
-)
+) : Parcelable
