@@ -8,13 +8,13 @@
     <fragment
         android:id="@+id/authorDetailsFragment"
         android:name="com.zvonimirplivelic.githound.ui.fragments.AuthorDetailsFragment"
-        android:label="fragment_author_details"
+        android:label="Author details"
         tools:layout="@layout/fragment_author_details" />
 
     <fragment
         android:id="@+id/searchListFragment"
-        android:name="com.zvonimirplivelic.githound.ui.fragments.SearchListFragment"
-        android:label="fragment_search_list"
+        android:name="com.zvonimirplivelic.githound.ui.fragments.RepoSearchListFragment"
+        android:label="Search list"
         tools:layout="@layout/fragment_search_list" >
         <action
             android:id="@+id/action_searchListFragment_to_repositoryDetailsFragment"
@@ -27,7 +27,7 @@
     <fragment
         android:id="@+id/repositoryDetailsFragment"
         android:name="com.zvonimirplivelic.githound.ui.fragments.RepositoryDetailsFragment"
-        android:label="fragment_repository_details"
+        android:label="Repository details"
         tools:layout="@layout/fragment_repository_details" >
         <action
             android:id="@+id/action_repositoryDetailsFragment_to_authorDetailsFragment"
