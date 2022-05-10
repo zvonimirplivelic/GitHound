@@ -5,12 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.githound.R
 import com.zvonimirplivelic.githound.model.GitRepoListResponse
+import com.zvonimirplivelic.githound.ui.fragments.RepoSearchListFragmentDirections
 
 class RepoSearchListAdapter() :
     RecyclerView.Adapter<RepoSearchListAdapter.RepoSearchItemViewHolder>() {
@@ -49,6 +52,7 @@ class RepoSearchListAdapter() :
     override fun onBindViewHolder(holder: RepoSearchItemViewHolder, position: Int) {
         val repositoryItem = differ.currentList[position]
         holder.itemView.apply {
+            val cvRepoItem: CardView = findViewById(R.id.cv_repo_item)
             val ivAuthorAvatar: ImageView = findViewById(R.id.iv_author_avatar)
             val tvAuthorName: TextView = findViewById(R.id.tv_author_name)
             val tvRepositoryName: TextView = findViewById(R.id.tv_repository_name)
@@ -60,6 +64,18 @@ class RepoSearchListAdapter() :
 
             tvAuthorName.text = repositoryItem.owner.login
             tvRepositoryName.text = repositoryItem.name
+
+            ivAuthorAvatar.setOnClickListener{
+                val action = RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment()
+                findNavController().navigate(action)
+            }
+            tvAuthorName.setOnClickListener{
+                val action = RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment()
+                findNavController().navigate(action)
+            }
+            cvRepoItem.setOnClickListener{
+                val action = RepoSearchListFragmentDirections.actionSearchListFragmentToRepositoryDetailsFragment()
+                findNavController().navigate(action)}
         }
     }
 
