@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">GitHound</string>
+    <string name="search_query_string">Enter Github repository name</string>
 </resources>
