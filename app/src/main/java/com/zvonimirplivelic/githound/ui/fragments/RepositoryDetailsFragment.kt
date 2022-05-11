@@ -64,6 +64,13 @@ class RepositoryDetailsFragment : Fragment() {
                             .resize(380, 380)
                             .into(ivAuthorAvatar)
 
+                        tvRepoDescription.text = repositoryDetailsData!!.description
+                        tvCreatedAt.text = repositoryDetailsData!!.createdAt
+                        tvUpdatedAt.text = repositoryDetailsData!!.updatedAt
+                        tvNumberOfForks.text = repositoryDetailsData!!.forks.toString()
+                        tvNumberOfWatchers.text = repositoryDetailsData!!.watchersCount.toString()
+                        tvNumberOfOpenIssues.text = repositoryDetailsData!!.openIssuesCount.toString()
+                        tvLanguage.text = repositoryDetailsData!!.language
                     }
                 }
 
