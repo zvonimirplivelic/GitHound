@@ -65,17 +65,25 @@ class RepoSearchListAdapter() :
             tvAuthorName.text = repositoryItem.owner.login
             tvRepositoryName.text = repositoryItem.name
 
-            ivAuthorAvatar.setOnClickListener{
-                val action = RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment()
+            ivAuthorAvatar.setOnClickListener {
+                val action =
+                    RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment(
+                        repositoryItem
+                    )
                 findNavController().navigate(action)
             }
-            tvAuthorName.setOnClickListener{
-                val action = RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment()
+            tvAuthorName.setOnClickListener {
+                val action =
+                    RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment(
+                        repositoryItem
+                    )
                 findNavController().navigate(action)
             }
-            cvRepoItem.setOnClickListener{
-                val action = RepoSearchListFragmentDirections.actionSearchListFragmentToRepositoryDetailsFragment()
-                findNavController().navigate(action)}
+            cvRepoItem.setOnClickListener {
+                val action =
+                    RepoSearchListFragmentDirections.actionSearchListFragmentToRepositoryDetailsFragment(repositoryItem)
+                findNavController().navigate(action)
+            }
         }
     }
 
