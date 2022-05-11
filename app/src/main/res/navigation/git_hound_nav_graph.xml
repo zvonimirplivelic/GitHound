@@ -9,7 +9,11 @@
         android:id="@+id/authorDetailsFragment"
         android:name="com.zvonimirplivelic.githound.ui.fragments.AuthorDetailsFragment"
         android:label="Author details"
-        tools:layout="@layout/fragment_author_details" />
+        tools:layout="@layout/fragment_author_details" >
+        <argument
+            android:name="currentRepository"
+            app:argType="com.zvonimirplivelic.githound.model.GitRepoListResponse$GitRepoResponseItem" />
+    </fragment>
 
     <fragment
         android:id="@+id/searchListFragment"
@@ -32,5 +36,8 @@
         <action
             android:id="@+id/action_repositoryDetailsFragment_to_authorDetailsFragment"
             app:destination="@id/authorDetailsFragment" />
+        <argument
+            android:name="currentRepository"
+            app:argType="com.zvonimirplivelic.githound.model.GitRepoListResponse$GitRepoResponseItem" />
     </fragment>
 </navigation>

@@ -4,11 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
-import android.provider.ContactsContract
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.zvonimirplivelic.githound.model.GitAuthorResponse
+import com.zvonimirplivelic.githound.model.GitRepoDetailResponse
 import com.zvonimirplivelic.githound.model.GitRepoListResponse
 import com.zvonimirplivelic.githound.repository.GitHoundRepository
 import com.zvonimirplivelic.githound.util.Constants.TIME_DELAY
@@ -22,14 +22,23 @@ class GitHoundViewModel(app: Application) : AndroidViewModel(app) {
     private val gitHoundRepository: GitHoundRepository = GitHoundRepository()
 
     val repositoryList: MutableLiveData<Resource<GitRepoListResponse>> = MutableLiveData()
+    val repositoryDetails: MutableLiveData<Resource<GitRepoDetailResponse>> = MutableLiveData()
+    val authorDetails: MutableLiveData<Resource<GitAuthorResponse>> = MutableLiveData()
 
     private var repositoryListDataResponse: GitRepoListResponse? = null
+    private var repositoryDetailsResponse: GitRepoDetailResponse? = null
+    private var authorDetailsResponse: GitAuthorResponse? = null
 
     fun getRepositoryList() = viewModelScope.launch {
-        safeRemoteDataCall()
+        safeRemoteRepositoryListCall()
     }
 
-    private suspend fun safeRemoteDataCall() {
+    fun getRepositoryDetailsResponse(authorName: String, repositoryName: String) =
+        viewModelScope.launch {
+            safeRemoteRepositoryDetailsCall(authorName, repositoryName)
+        }
+
+    private suspend fun safeRemoteRepositoryListCall() {
         repositoryList.postValue(Resource.Loading())
         try {
             if (hasInternetConnection()) {
@@ -38,6 +47,27 @@ class GitHoundViewModel(app: Application) : AndroidViewModel(app) {
                 repositoryList.postValue(handleRepositoryListResponse(response))
             } else {
                 repositoryList.postValue(Resource.Error("No internet connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> repositoryList.postValue(Resource.Error("Network Failure"))
+                else -> repositoryList.postValue(Resource.Error("Conversion Error"))
+            }
+        }
+    }
+
+    private suspend fun safeRemoteRepositoryDetailsCall(
+        authorName: String,
+        repositoryName: String
+    ) {
+        repositoryDetails.postValue(Resource.Loading())
+        try {
+            if (hasInternetConnection()) {
+                val response = gitHoundRepository.getRepositoryDetails(authorName, repositoryName)
+                delay(TIME_DELAY)
+                repositoryDetails.postValue(handleRepositoryDetailsResponse(response))
+            } else {
+                repositoryDetails.postValue(Resource.Error("No internet connection"))
             }
         } catch (t: Throwable) {
             when (t) {
@@ -58,6 +88,19 @@ class GitHoundViewModel(app: Application) : AndroidViewModel(app) {
         }
         return Resource.Error(response.message())
     }
+
+    private fun handleRepositoryDetailsResponse(response: Response<GitRepoDetailResponse>): Resource<GitRepoDetailResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+
+                repositoryDetailsResponse = resultResponse
+
+                return Resource.Success(repositoryDetailsResponse ?: resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
 
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<GitHoundApplication>().getSystemService(

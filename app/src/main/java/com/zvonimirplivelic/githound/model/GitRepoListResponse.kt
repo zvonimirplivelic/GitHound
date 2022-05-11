@@ -7,6 +7,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>(), Parcelable {
+    @Parcelize
     data class GitRepoResponseItem(
         @SerializedName("archive_url")
         val archiveUrl: String,
@@ -100,7 +101,8 @@ class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>()
         val treesUrl: String,
         @SerializedName("url")
         val url: String
-    ) {
+    ) : Parcelable {
+        @Parcelize
         data class Owner(
             @SerializedName("avatar_url")
             val avatarUrl: String,
@@ -138,6 +140,6 @@ class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>()
             val type: String,
             @SerializedName("url")
             val url: String
-        )
+        ) : Parcelable
     }
 }
