@@ -30,7 +30,7 @@ class RepositoryDetailsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_repository_details, container, false)
 
         val selectedRepository: GitRepoListResponse.GitRepoResponseItem = args.currentRepository
-        var repositoryDetailsData: GitRepoDetailResponse? = null
+        var repositoryDetailsData: GitRepoDetailResponse?
 
         val tvRepoName: TextView = view.findViewById(R.id.tv_repo_name_repo_details)
         val ivAuthorAvatar: ImageView = view.findViewById(R.id.iv_author_avatar_repo_details)

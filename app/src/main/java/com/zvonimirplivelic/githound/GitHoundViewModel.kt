@@ -38,6 +38,11 @@ class GitHoundViewModel(app: Application) : AndroidViewModel(app) {
             safeRemoteRepositoryDetailsCall(authorName, repositoryName)
         }
 
+    fun getAuthorDetailsResponse(authorName: String) =
+        viewModelScope.launch {
+            safeRemoteAuthorDetailsCall(authorName)
+        }
+
     private suspend fun safeRemoteRepositoryListCall() {
         repositoryList.postValue(Resource.Loading())
         try {
@@ -71,8 +76,26 @@ class GitHoundViewModel(app: Application) : AndroidViewModel(app) {
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> repositoryList.postValue(Resource.Error("Network Failure"))
-                else -> repositoryList.postValue(Resource.Error("Conversion Error"))
+                is IOException -> repositoryDetails.postValue(Resource.Error("Network Failure"))
+                else -> repositoryDetails.postValue(Resource.Error("Conversion Error"))
+            }
+        }
+    }
+
+    private suspend fun safeRemoteAuthorDetailsCall(authorName: String) {
+        authorDetails.postValue(Resource.Loading())
+        try {
+            if (hasInternetConnection()) {
+                val response = gitHoundRepository.getAuthorDetails(authorName)
+                delay(TIME_DELAY)
+                authorDetails.postValue(handleAuthorDetailsResponse(response))
+            } else {
+                authorDetails.postValue(Resource.Error("No internet connection"))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> authorDetails.postValue(Resource.Error("Network Failure"))
+                else -> authorDetails.postValue(Resource.Error("Conversion Error"))
             }
         }
     }
@@ -96,6 +119,18 @@ class GitHoundViewModel(app: Application) : AndroidViewModel(app) {
                 repositoryDetailsResponse = resultResponse
 
                 return Resource.Success(repositoryDetailsResponse ?: resultResponse)
+            }
+        }
+        return Resource.Error(response.message())
+    }
+
+    private fun handleAuthorDetailsResponse(response: Response<GitAuthorResponse>): Resource<GitAuthorResponse> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+
+                authorDetailsResponse = resultResponse
+
+                return Resource.Success(authorDetailsResponse ?: resultResponse)
             }
         }
         return Resource.Error(response.message())
