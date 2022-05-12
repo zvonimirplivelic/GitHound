@@ -45,6 +45,7 @@ class RepoSearchListFragment : Fragment() {
         ibSearchList = view.findViewById(R.id.ib_search_list_button)
         progressBar = view.findViewById(R.id.progress_bar)
 
+        etSearchListQuery.setText("")
         repoListAdapter = RepoSearchListAdapter()
         recyclerView.apply {
             adapter = repoListAdapter
@@ -93,16 +94,19 @@ class RepoSearchListFragment : Fragment() {
         repoList: MutableList<GitRepoListResponse.GitRepoResponseItem>
     ) {
         val listSearch: MutableList<GitRepoListResponse.GitRepoResponseItem> = mutableListOf()
-        repoList.forEach { repoItem ->
-            val queryTerm = queryString.lowercase(Locale.ROOT)
-            val repoName = repoItem.name.lowercase(Locale.ROOT)
 
-            if (repoName.contains(queryTerm))
-                listSearch.add(repoItem)
+        if (queryString.isBlank()) {
+            repoListAdapter.differ.submitList(repoList)
+        } else {
+            repoList.forEach { repoItem ->
+
+                val queryTerm = queryString.lowercase(Locale.ROOT)
+                val repoName = repoItem.name.lowercase(Locale.ROOT)
+
+                if (repoName.contains(queryTerm))
+                    listSearch.add(repoItem)
+            }
+            repoListAdapter.differ.submitList(listSearch)
         }
-        Timber.d("FunFilter//String query $queryString")
-        Timber.d("FunFilter//Repo list: $repoList")
-        Timber.d("FunFilter//Filtered list: $listSearch")
-        repoListAdapter.differ.submitList(listSearch)
     }
 }
