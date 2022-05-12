@@ -6,6 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +17,9 @@ import com.zvonimirplivelic.githound.GitHoundViewModel
 import com.zvonimirplivelic.githound.R
 import com.zvonimirplivelic.githound.model.GitRepoListResponse
 import com.zvonimirplivelic.githound.ui.RepoSearchListAdapter
+import com.zvonimirplivelic.githound.util.Resource
+import timber.log.Timber
+import java.util.*
 
 class RepoSearchListFragment : Fragment() {
     private lateinit var viewModel: GitHoundViewModel
@@ -20,6 +27,10 @@ class RepoSearchListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var etSearchListQuery: EditText
+    private lateinit var progressBar: ProgressBar
+    private lateinit var ibSearchList: ImageButton
+
+    private lateinit var displayedList: MutableList<GitRepoListResponse.GitRepoResponseItem>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +42,8 @@ class RepoSearchListFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.rv_repository_list)
         etSearchListQuery = view.findViewById(R.id.et_search_list_query)
+        ibSearchList = view.findViewById(R.id.ib_search_list_button)
+        progressBar = view.findViewById(R.id.progress_bar)
 
         repoListAdapter = RepoSearchListAdapter()
         recyclerView.apply {
@@ -40,22 +53,70 @@ class RepoSearchListFragment : Fragment() {
 
         viewModel.getRepositoryList()
 
-        viewModel.repositoryList.observe(viewLifecycleOwner) { repositoryList ->
+        ibSearchList.setOnClickListener {
+            filterList(etSearchListQuery.text.toString(), displayedList)
+        }
 
-//            val repoSearch: MutableList<GitRepoListResponse.GitRepoResponseItem> = mutableListOf()
-//            val queryString = etSearchListQuery.text.toString()
-//
-//            repoSearch.forEach { repoItem ->
-//                val repositoryName = repoItem.name
-//                if(repositoryName.contains(queryString)) {
-//                    repoSearch.add(repoItem)
-//                } else {
-//                    repoListAdapter.differ.submitList(repositoryList.data)
-//                }
-//            }
+        viewModel.repositoryList.observe(viewLifecycleOwner) { response ->
 
-            repoListAdapter.differ.submitList(repositoryList.data)
+            when (response) {
+                is Resource.Success -> {
+                    progressBar.isVisible = false
+                    etSearchListQuery.isVisible = true
+                    ibSearchList.isVisible = true
+                    recyclerView.isVisible = true
+
+                    response.data?.let { repoList ->
+                        displayedList = repoList
+                        repoListAdapter.differ.submitList(repoList)
+                    }
+                }
+
+                is Resource.Error -> {
+                    progressBar.isVisible = false
+                    etSearchListQuery.isVisible = true
+                    ibSearchList.isVisible = true
+                    recyclerView.isVisible = true
+
+                    response.message?.let { message ->
+                        Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+
+                is Resource.Loading -> {
+                    progressBar.isVisible = true
+                    etSearchListQuery.isVisible = false
+                    ibSearchList.isVisible = false
+                    recyclerView.isVisible = false
+                }
+            }
+
         }
         return view
+    }
+
+    private fun filterList(
+        queryString: String,
+        repoList: MutableList<GitRepoListResponse.GitRepoResponseItem>
+    ) {
+        val listSearch: MutableList<GitRepoListResponse.GitRepoResponseItem> = mutableListOf()
+
+        if (queryString.isBlank()) {
+            repoListAdapter.differ.submitList(repoList)
+        } else {
+            repoList.forEach { repoItem ->
+
+                val queryTerm = queryString.lowercase(Locale.ROOT)
+                val repoName = repoItem.name.lowercase(Locale.ROOT)
+
+                if (repoName.contains(queryTerm))
+                    listSearch.add(repoItem)
+            }
+            if (listSearch.size == 0) {
+                Toast.makeText(requireContext(), "No results found", Toast.LENGTH_SHORT).show()
+            }
+            repoListAdapter.differ.submitList(listSearch)
+        }
     }
 }
