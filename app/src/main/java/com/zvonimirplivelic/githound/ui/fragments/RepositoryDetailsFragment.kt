@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -23,6 +24,8 @@ class RepositoryDetailsFragment : Fragment() {
     private val args by navArgs<RepositoryDetailsFragmentArgs>()
     private lateinit var viewModel: GitHoundViewModel
 
+    private lateinit var progressBar: ProgressBar
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,7 +33,6 @@ class RepositoryDetailsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_repository_details, container, false)
 
         val selectedRepository: GitRepoListResponse.GitRepoResponseItem = args.currentRepository
-        var repositoryDetailsData: GitRepoDetailResponse?
 
         val tvRepoName: TextView = view.findViewById(R.id.tv_repo_name_repo_details)
         val ivAuthorAvatar: ImageView = view.findViewById(R.id.iv_author_avatar_repo_details)
@@ -43,6 +45,8 @@ class RepositoryDetailsFragment : Fragment() {
         val tvNumberOfOpenIssues: TextView = view.findViewById(R.id.tv_number_of_open_issues_repo_details)
         val tvLanguage: TextView = view.findViewById(R.id.tv_language_repo_details)
 
+        progressBar = view.findViewById(R.id.progress_bar)
+
         viewModel = ViewModelProvider(this)[GitHoundViewModel::class.java]
         viewModel.getRepositoryDetailsResponse(
             selectedRepository.owner.login,
@@ -52,30 +56,29 @@ class RepositoryDetailsFragment : Fragment() {
         viewModel.repositoryDetails.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-//                    progressBar.isVisible = false
+                    progressBar.isVisible = false
                     response.data?.let { detailResponse ->
-                        repositoryDetailsData = detailResponse
 
-                        tvRepoName.text = repositoryDetailsData!!.name
-                        tvAuthorName.text = repositoryDetailsData!!.owner.login
+                        tvRepoName.text = detailResponse.name
+                        tvAuthorName.text = detailResponse.owner.login
 
                         Picasso.get()
-                            .load(repositoryDetailsData!!.owner.avatarUrl)
+                            .load(detailResponse.owner.avatarUrl)
                             .resize(380, 380)
                             .into(ivAuthorAvatar)
 
-                        tvRepoDescription.text = repositoryDetailsData!!.description
-                        tvCreatedAt.text = repositoryDetailsData!!.createdAt
-                        tvUpdatedAt.text = repositoryDetailsData!!.updatedAt
-                        tvNumberOfForks.text = repositoryDetailsData!!.forks.toString()
-                        tvNumberOfWatchers.text = repositoryDetailsData!!.watchersCount.toString()
-                        tvNumberOfOpenIssues.text = repositoryDetailsData!!.openIssuesCount.toString()
-                        tvLanguage.text = repositoryDetailsData!!.language
+                        tvRepoDescription.text = detailResponse.description
+                        tvCreatedAt.text = detailResponse.createdAt
+                        tvUpdatedAt.text = detailResponse.updatedAt
+                        tvNumberOfForks.text = detailResponse.forks.toString()
+                        tvNumberOfWatchers.text = detailResponse.watchersCount.toString()
+                        tvNumberOfOpenIssues.text = detailResponse.openIssuesCount.toString()
+                        tvLanguage.text = detailResponse.language
                     }
                 }
 
                 is Resource.Error -> {
-//                    progressBar.isVisible = false
+                    progressBar.isVisible = false
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
                             .show()
@@ -83,7 +86,7 @@ class RepositoryDetailsFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
-//                    progressBar.isVisible = true
+                    progressBar.isVisible = true
                 }
             }
         }

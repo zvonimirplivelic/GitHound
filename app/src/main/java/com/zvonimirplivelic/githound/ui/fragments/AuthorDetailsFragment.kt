@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
@@ -22,6 +24,7 @@ class AuthorDetailsFragment : Fragment() {
     private val args by navArgs<RepositoryDetailsFragmentArgs>()
     private lateinit var viewModel: GitHoundViewModel
 
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,11 +32,11 @@ class AuthorDetailsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_author_details, container, false)
         val selectedRepository: GitRepoListResponse.GitRepoResponseItem = args.currentRepository
-        var authorDetailsData: GitAuthorResponse?
 
         val ivAuthorAvatar: ImageView = view.findViewById(R.id.iv_avatar_author_details)
         val tvAuthorName: TextView = view.findViewById(R.id.tv_name_author_details)
 
+        progressBar = view.findViewById(R.id.progress_bar)
 
         viewModel = ViewModelProvider(this)[GitHoundViewModel::class.java]
         viewModel.getAuthorDetailsResponse(selectedRepository.owner.login)
@@ -41,21 +44,19 @@ class AuthorDetailsFragment : Fragment() {
         viewModel.authorDetails.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is Resource.Success -> {
-//                    progressBar.isVisible = false
+                    progressBar.isVisible = false
                     response.data?.let { detailResponse ->
-                        authorDetailsData = detailResponse
-
-                        tvAuthorName.text = authorDetailsData!!.login
+                        tvAuthorName.text = detailResponse.login
 
                         Picasso.get()
-                            .load(authorDetailsData!!.avatarUrl)
+                            .load(detailResponse.avatarUrl)
                             .resize(380, 380)
                             .into(ivAuthorAvatar)
                     }
                 }
 
                 is Resource.Error -> {
-//                    progressBar.isVisible = false
+                    progressBar.isVisible = false
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
                             .show()
@@ -63,7 +64,7 @@ class AuthorDetailsFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
-//                    progressBar.isVisible = true
+                    progressBar.isVisible = true
                 }
             }
         }
