@@ -1,14 +1,13 @@
 package com.zvonimirplivelic.githound.ui.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -35,11 +34,18 @@ class AuthorDetailsFragment : Fragment() {
 
         val ivAuthorAvatar: ImageView = view.findViewById(R.id.iv_avatar_author_details)
         val tvAuthorName: TextView = view.findViewById(R.id.tv_name_author_details)
+        val btnOpenAuthorDetails: Button = view.findViewById(R.id.btn_open_author_profile)
 
         progressBar = view.findViewById(R.id.progress_bar)
 
         viewModel = ViewModelProvider(this)[GitHoundViewModel::class.java]
         viewModel.getAuthorDetailsResponse(selectedRepository.owner.login)
+
+        btnOpenAuthorDetails.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW)
+            browserIntent.data = Uri.parse(selectedRepository.owner.htmlUrl)
+            startActivity(browserIntent)
+        }
 
         viewModel.authorDetails.observe(viewLifecycleOwner) { response ->
             when (response) {

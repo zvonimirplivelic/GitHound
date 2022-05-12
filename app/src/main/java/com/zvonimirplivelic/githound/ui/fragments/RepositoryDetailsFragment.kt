@@ -1,23 +1,20 @@
 package com.zvonimirplivelic.githound.ui.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.githound.GitHoundViewModel
 import com.zvonimirplivelic.githound.R
-import com.zvonimirplivelic.githound.model.GitRepoDetailResponse
 import com.zvonimirplivelic.githound.model.GitRepoListResponse
 import com.zvonimirplivelic.githound.util.Resource
 
@@ -46,6 +43,7 @@ class RepositoryDetailsFragment : Fragment() {
         val tvNumberOfWatchers: TextView = view.findViewById(R.id.tv_number_of_watchers_repo_details)
         val tvNumberOfOpenIssues: TextView = view.findViewById(R.id.tv_number_of_open_issues_repo_details)
         val tvLanguage: TextView = view.findViewById(R.id.tv_language_repo_details)
+        val btnOpenRepoDetails: Button = view.findViewById(R.id.btn_open_github_repository)
 
         progressBar = view.findViewById(R.id.progress_bar)
 
@@ -54,6 +52,12 @@ class RepositoryDetailsFragment : Fragment() {
             selectedRepository.owner.login,
             selectedRepository.name
         )
+
+        btnOpenRepoDetails.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW)
+            browserIntent.data = Uri.parse(selectedRepository.htmlUrl)
+            startActivity(browserIntent)
+        }
 
         viewModel.repositoryDetails.observe(viewLifecycleOwner) { response ->
             when (response) {

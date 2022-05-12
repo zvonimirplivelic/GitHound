@@ -45,7 +45,6 @@ class RepoSearchListFragment : Fragment() {
         ibSearchList = view.findViewById(R.id.ib_search_list_button)
         progressBar = view.findViewById(R.id.progress_bar)
 
-        etSearchListQuery.setText("")
         repoListAdapter = RepoSearchListAdapter()
         recyclerView.apply {
             adapter = repoListAdapter
@@ -64,6 +63,8 @@ class RepoSearchListFragment : Fragment() {
                 is Resource.Success -> {
                     progressBar.isVisible = false
                     etSearchListQuery.isVisible = true
+                    ibSearchList.isVisible = true
+                    recyclerView.isVisible = true
 
                     response.data?.let { repoList ->
                         displayedList = repoList
@@ -73,6 +74,10 @@ class RepoSearchListFragment : Fragment() {
 
                 is Resource.Error -> {
                     progressBar.isVisible = false
+                    etSearchListQuery.isVisible = true
+                    ibSearchList.isVisible = true
+                    recyclerView.isVisible = true
+
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
                             .show()
@@ -82,6 +87,8 @@ class RepoSearchListFragment : Fragment() {
                 is Resource.Loading -> {
                     progressBar.isVisible = true
                     etSearchListQuery.isVisible = false
+                    ibSearchList.isVisible = false
+                    recyclerView.isVisible = false
                 }
             }
 
@@ -105,6 +112,9 @@ class RepoSearchListFragment : Fragment() {
 
                 if (repoName.contains(queryTerm))
                     listSearch.add(repoItem)
+            }
+            if (listSearch.size == 0) {
+                Toast.makeText(requireContext(), "No results found", Toast.LENGTH_SHORT).show()
             }
             repoListAdapter.differ.submitList(listSearch)
         }
