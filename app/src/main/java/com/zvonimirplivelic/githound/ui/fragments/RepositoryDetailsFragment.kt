@@ -11,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.githound.GitHoundViewModel
@@ -74,6 +76,13 @@ class RepositoryDetailsFragment : Fragment() {
                         tvNumberOfWatchers.text = detailResponse.watchersCount.toString()
                         tvNumberOfOpenIssues.text = detailResponse.openIssuesCount.toString()
                         tvLanguage.text = detailResponse.language
+
+                        tvAuthorName.setOnClickListener {
+                            navigateToAuthorDetails(selectedRepository)
+                        }
+                        ivAuthorAvatar.setOnClickListener {
+                            navigateToAuthorDetails(selectedRepository)
+                        }
                     }
                 }
 
@@ -91,5 +100,13 @@ class RepositoryDetailsFragment : Fragment() {
             }
         }
         return view
+    }
+
+    private fun navigateToAuthorDetails(selectedRepository: GitRepoListResponse.GitRepoResponseItem) {
+        val action =
+            RepositoryDetailsFragmentDirections.actionRepositoryDetailsFragmentToAuthorDetailsFragment(
+                selectedRepository
+            )
+        findNavController().navigate(action)
     }
 }
