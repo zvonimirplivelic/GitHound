@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.githound.GitHoundViewModel
 import com.zvonimirplivelic.githound.R
 import com.zvonimirplivelic.githound.model.GitRepoListResponse
+import com.zvonimirplivelic.githound.util.Constants.FRAGMENT_IMAGE_DIMENSION
 import com.zvonimirplivelic.githound.util.Resource
 
 class RepositoryDetailsFragment : Fragment() {
@@ -33,6 +35,7 @@ class RepositoryDetailsFragment : Fragment() {
 
         val selectedRepository: GitRepoListResponse.GitRepoResponseItem = args.currentRepository
 
+        val repositoryDataLayout: ConstraintLayout = view.findViewById(R.id.repository_data_layout)
         val tvRepoName: TextView = view.findViewById(R.id.tv_repo_name_repo_details)
         val ivAuthorAvatar: ImageView = view.findViewById(R.id.iv_author_avatar_repo_details)
         val tvAuthorName: TextView = view.findViewById(R.id.tv_author_name_repo_details)
@@ -40,8 +43,10 @@ class RepositoryDetailsFragment : Fragment() {
         val tvCreatedAt: TextView = view.findViewById(R.id.tv_created_at_repo_details)
         val tvUpdatedAt: TextView = view.findViewById(R.id.tv_updated_at_repo_details)
         val tvNumberOfForks: TextView = view.findViewById(R.id.tv_number_of_forks_repo_details)
-        val tvNumberOfWatchers: TextView = view.findViewById(R.id.tv_number_of_watchers_repo_details)
-        val tvNumberOfOpenIssues: TextView = view.findViewById(R.id.tv_number_of_open_issues_repo_details)
+        val tvNumberOfWatchers: TextView =
+            view.findViewById(R.id.tv_number_of_watchers_repo_details)
+        val tvNumberOfOpenIssues: TextView =
+            view.findViewById(R.id.tv_number_of_open_issues_repo_details)
         val tvLanguage: TextView = view.findViewById(R.id.tv_language_repo_details)
         val btnOpenRepoDetails: Button = view.findViewById(R.id.btn_open_github_repository)
 
@@ -53,6 +58,13 @@ class RepositoryDetailsFragment : Fragment() {
             selectedRepository.name
         )
 
+        tvAuthorName.setOnClickListener {
+            navigateToAuthorDetails(selectedRepository)
+        }
+        ivAuthorAvatar.setOnClickListener {
+            navigateToAuthorDetails(selectedRepository)
+        }
+
         btnOpenRepoDetails.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW)
             browserIntent.data = Uri.parse(selectedRepository.htmlUrl)
@@ -63,35 +75,48 @@ class RepositoryDetailsFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     progressBar.isVisible = false
+                    repositoryDataLayout.isVisible = true
+
                     response.data?.let { detailResponse ->
 
-                        tvRepoName.text = detailResponse.name
-                        tvAuthorName.text = detailResponse.owner.login
+                        tvRepoName.text =
+                            resources.getString(R.string.repository_name, detailResponse.name)
+                        tvAuthorName.text =
+                            resources.getString(R.string.author_name, detailResponse.owner.login)
 
                         Picasso.get()
                             .load(detailResponse.owner.avatarUrl)
-                            .resize(380, 380)
+                            .noFade()
+                            .resize(FRAGMENT_IMAGE_DIMENSION, FRAGMENT_IMAGE_DIMENSION)
                             .into(ivAuthorAvatar)
 
-                        tvRepoDescription.text = detailResponse.description
-                        tvCreatedAt.text = detailResponse.createdAt
-                        tvUpdatedAt.text = detailResponse.updatedAt
-                        tvNumberOfForks.text = detailResponse.forks.toString()
-                        tvNumberOfWatchers.text = detailResponse.watchersCount.toString()
-                        tvNumberOfOpenIssues.text = detailResponse.openIssuesCount.toString()
-                        tvLanguage.text = detailResponse.language
+                        tvRepoDescription.text = resources.getString(
+                            R.string.repository_description,
+                            detailResponse.description
+                        )
 
-                        tvAuthorName.setOnClickListener {
-                            navigateToAuthorDetails(selectedRepository)
-                        }
-                        ivAuthorAvatar.setOnClickListener {
-                            navigateToAuthorDetails(selectedRepository)
-                        }
+                        tvCreatedAt.text =
+                            resources.getString(R.string.created_at, detailResponse.createdAt)
+                        tvUpdatedAt.text =
+                            resources.getString(R.string.updated_at, detailResponse.updatedAt)
+                        tvNumberOfForks.text =
+                            resources.getString(R.string.number_of_forks, detailResponse.forks)
+                        tvNumberOfWatchers.text = resources.getString(
+                            R.string.number_of_watchers,
+                            detailResponse.watchersCount
+                        )
+                        tvNumberOfOpenIssues.text = resources.getString(
+                            R.string.number_of_open_issues,
+                            detailResponse.openIssuesCount
+                        )
+                        tvLanguage.text =
+                            resources.getString(R.string.language, detailResponse.language)
                     }
                 }
 
                 is Resource.Error -> {
                     progressBar.isVisible = false
+                    repositoryDataLayout.isVisible = true
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
                             .show()
@@ -100,6 +125,7 @@ class RepositoryDetailsFragment : Fragment() {
 
                 is Resource.Loading -> {
                     progressBar.isVisible = true
+                    repositoryDataLayout.isVisible = false
                 }
             }
         }
