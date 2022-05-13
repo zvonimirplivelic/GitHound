@@ -8,6 +8,8 @@
         <entry key="app/src/main/res/layout/fragment_repository_details.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/fragment_search_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/search_list_item.xml" value="0.19375" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2015" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2015" />
       </map>
     </option>
   </component>

@@ -14,6 +14,7 @@ import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.githound.R
 import com.zvonimirplivelic.githound.model.GitRepoListResponse
 import com.zvonimirplivelic.githound.ui.fragments.RepoSearchListFragmentDirections
+import com.zvonimirplivelic.githound.util.Constants.ADAPTER_IMAGE_DIMENSION
 
 class RepoSearchListAdapter() :
     RecyclerView.Adapter<RepoSearchListAdapter.RepoSearchItemViewHolder>() {
@@ -59,33 +60,36 @@ class RepoSearchListAdapter() :
 
             Picasso.get()
                 .load(repositoryItem.owner.avatarUrl)
-                .resize(250, 250)
+                .resize(ADAPTER_IMAGE_DIMENSION, ADAPTER_IMAGE_DIMENSION)
+                .noFade()
                 .into(ivAuthorAvatar)
 
-            tvAuthorName.text = repositoryItem.owner.login
-            tvRepositoryName.text = repositoryItem.name
+            tvAuthorName.text =
+                resources.getString(R.string.author_name, repositoryItem.owner.login)
+            tvRepositoryName.text =
+                resources.getString(R.string.repository_name, repositoryItem.name)
 
-            ivAuthorAvatar.setOnClickListener {
-                val action =
-                    RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment(
-                        repositoryItem
-                    )
-                findNavController().navigate(action)
-            }
-            tvAuthorName.setOnClickListener {
-                val action =
-                    RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment(
-                        repositoryItem
-                    )
-                findNavController().navigate(action)
-            }
+            ivAuthorAvatar.setOnClickListener(navigateToAuthorScreen(repositoryItem))
+            tvAuthorName.setOnClickListener(navigateToAuthorScreen(repositoryItem))
+
             cvRepoItem.setOnClickListener {
                 val action =
-                    RepoSearchListFragmentDirections.actionSearchListFragmentToRepositoryDetailsFragment(repositoryItem)
+                    RepoSearchListFragmentDirections.actionSearchListFragmentToRepositoryDetailsFragment(
+                        repositoryItem
+                    )
                 findNavController().navigate(action)
             }
         }
     }
 
     override fun getItemCount(): Int = differ.currentList.size
+
+    private fun View.navigateToAuthorScreen(repositoryItem: GitRepoListResponse.GitRepoResponseItem): (View) -> Unit =
+        {
+            val action =
+                RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment(
+                    repositoryItem
+                )
+            findNavController().navigate(action)
+        }
 }

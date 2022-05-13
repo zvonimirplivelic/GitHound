@@ -1,4 +1,25 @@
 <resources>
     <string name="app_name">GitHound</string>
-    <string name="search_query_string">Enter Github repository name</string>
+
+<!-- LIST FRAGMENT STRINGS-->
+    <string name="search_query_hint">Enter Github repository name</string>
+    <string name="author_name">Author: %1s</string>
+    <string name="repository_name">Repository: %1s</string>
+
+<!-- REPOSITORY DETAILS STRINGS-->
+    <string name="author_avatar_description">Author avatar</string>
+    <string name="repository_description">Description:\n%1s</string>
+    <string name="created_at">Created at: %1s</string>
+    <string name="updated_at">Updated at: %1s</string>
+    <string name="number_of_forks">Number of Forks: %1d</string>
+    <string name="number_of_watchers">Number of Watchers: %1d</string>
+    <string name="number_of_open_issues">Number of Open issues: %1d</string>
+    <string name="language">Language: %1s</string>
+    <string name="open_github_repository_btn">Open github repository</string>
+
+<!-- AUTHOR DETAILS STRINGS-->
+    <string name="author_name_details">Name: %1s</string>
+    <string name="repository_name_details">Repository: %1s</string>
+    <string name="open_author_profile_btn">Open author profile</string>
+    <string name="search_git_repositories_btn">Search git repositories button</string>
 </resources>

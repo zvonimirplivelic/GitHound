@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,13 +19,13 @@ import com.zvonimirplivelic.githound.R
 import com.zvonimirplivelic.githound.model.GitRepoListResponse
 import com.zvonimirplivelic.githound.ui.RepoSearchListAdapter
 import com.zvonimirplivelic.githound.util.Resource
-import timber.log.Timber
 import java.util.*
 
 class RepoSearchListFragment : Fragment() {
     private lateinit var viewModel: GitHoundViewModel
     private lateinit var repoListAdapter: RepoSearchListAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var dataLayout: ConstraintLayout
 
     private lateinit var etSearchListQuery: EditText
     private lateinit var progressBar: ProgressBar
@@ -39,6 +40,8 @@ class RepoSearchListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_search_list, container, false)
 
         viewModel = ViewModelProvider(this)[GitHoundViewModel::class.java]
+
+        dataLayout = view.findViewById(R.id.list_data_layout)
 
         recyclerView = view.findViewById(R.id.rv_repository_list)
         etSearchListQuery = view.findViewById(R.id.et_search_list_query)
@@ -62,9 +65,7 @@ class RepoSearchListFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     progressBar.isVisible = false
-                    etSearchListQuery.isVisible = true
-                    ibSearchList.isVisible = true
-                    recyclerView.isVisible = true
+                    dataLayout.isVisible = true
 
                     response.data?.let { repoList ->
                         displayedList = repoList
@@ -74,9 +75,7 @@ class RepoSearchListFragment : Fragment() {
 
                 is Resource.Error -> {
                     progressBar.isVisible = false
-                    etSearchListQuery.isVisible = true
-                    ibSearchList.isVisible = true
-                    recyclerView.isVisible = true
+                    dataLayout.isVisible = true
 
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
@@ -86,9 +85,7 @@ class RepoSearchListFragment : Fragment() {
 
                 is Resource.Loading -> {
                     progressBar.isVisible = true
-                    etSearchListQuery.isVisible = false
-                    ibSearchList.isVisible = false
-                    recyclerView.isVisible = false
+                    dataLayout.isVisible = false
                 }
             }
 
