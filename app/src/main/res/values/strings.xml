@@ -11,9 +11,9 @@
     <string name="repository_description">Description:\n%1s</string>
     <string name="created_at">Created at: %1s</string>
     <string name="updated_at">Updated at: %1s</string>
-    <string name="number_of_forks">Number of Forks: %1d</string>
-    <string name="number_of_watchers">Number of Watchers: %1d</string>
-    <string name="number_of_open_issues">Number of Open issues: %1d</string>
+    <string name="number_of_forks">Forks: %1d</string>
+    <string name="number_of_watchers">Watchers: %1d</string>
+    <string name="number_of_open_issues">Open issues: %1d</string>
     <string name="language">Language: %1s</string>
     <string name="open_github_repository_btn">Open github repository</string>
 

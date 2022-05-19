@@ -16,7 +16,7 @@ import com.zvonimirplivelic.githound.model.GitSearchListResponse
 import com.zvonimirplivelic.githound.ui.fragments.RepoSearchListFragmentDirections
 import com.zvonimirplivelic.githound.util.Constants.ADAPTER_IMAGE_DIMENSION
 
-class RepoSearchListAdapter:
+class RepoSearchListAdapter :
     RecyclerView.Adapter<RepoSearchListAdapter.RepoSearchItemViewHolder>() {
 
     inner class RepoSearchItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -59,6 +59,9 @@ class RepoSearchListAdapter:
             val ivAuthorAvatar: ImageView = findViewById(R.id.iv_author_avatar)
             val tvAuthorName: TextView = findViewById(R.id.tv_author_name)
             val tvRepositoryName: TextView = findViewById(R.id.tv_repository_name)
+            val tvForksCount: TextView = findViewById(R.id.tv_forks_count)
+            val tvWatchersCount: TextView = findViewById(R.id.tv_watchers_count)
+            val tvOpenIssuesCount: TextView = findViewById(R.id.tv_open_issues_count)
 
             Picasso.get()
                 .load(repositoryItem.owner.avatarUrl)
@@ -68,6 +71,12 @@ class RepoSearchListAdapter:
 
             tvAuthorName.text = repositoryItem.owner.login
             tvRepositoryName.text = repositoryItem.name
+            tvForksCount.text =
+                resources.getString(R.string.number_of_forks, repositoryItem.forksCount)
+            tvWatchersCount.text =
+                resources.getString(R.string.number_of_watchers, repositoryItem.watchersCount)
+            tvOpenIssuesCount.text =
+                resources.getString(R.string.number_of_open_issues, repositoryItem.openIssuesCount)
 
             cvAuthor.setOnClickListener {
                 val action =
