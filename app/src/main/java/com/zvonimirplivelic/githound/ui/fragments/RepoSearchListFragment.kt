@@ -30,7 +30,6 @@ class RepoSearchListFragment : Fragment() {
     private lateinit var viewModel: GitHoundViewModel
     private lateinit var repoListAdapter: RepoSearchListAdapter
     private lateinit var recyclerView: RecyclerView
-    private lateinit var dataLayout: ConstraintLayout
 
     private lateinit var etSearchListQuery: EditText
     private lateinit var progressBar: ProgressBar
@@ -42,10 +41,7 @@ class RepoSearchListFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_search_list, container, false)
 
-
         viewModel = ViewModelProvider(this)[GitHoundViewModel::class.java]
-
-        dataLayout = view.findViewById(R.id.list_data_layout)
 
         recyclerView = view.findViewById(R.id.rv_repository_list)
         etSearchListQuery = view.findViewById(R.id.et_search_list_query)
@@ -65,6 +61,9 @@ class RepoSearchListFragment : Fragment() {
                 delay(1000L)
                 queryString?.let {
                     if (queryString.toString().isNotEmpty() && recyclerView.isEmpty()) {
+
+                        // empty recycler image
+
                         viewModel.getRepositoryList(queryString.toString(), "", "", 30, 1)
                     }
                 }
@@ -80,7 +79,6 @@ class RepoSearchListFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     progressBar.isVisible = false
-                    dataLayout.isVisible = true
 
                     response.data?.let { repoList ->
                         repoListAdapter.differ.submitList(repoList.items)
@@ -89,7 +87,6 @@ class RepoSearchListFragment : Fragment() {
 
                 is Resource.Error -> {
                     progressBar.isVisible = false
-                    dataLayout.isVisible = true
 
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
@@ -99,7 +96,6 @@ class RepoSearchListFragment : Fragment() {
 
                 is Resource.Loading -> {
                     progressBar.isVisible = true
-                    dataLayout.isVisible = false
                 }
             }
 

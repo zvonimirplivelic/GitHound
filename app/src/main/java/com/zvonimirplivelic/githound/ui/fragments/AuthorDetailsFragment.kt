@@ -8,16 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.squareup.picasso.Picasso
-import com.zvonimirplivelic.githound.GitHoundViewModel
 import com.zvonimirplivelic.githound.R
-import com.zvonimirplivelic.githound.model.GitSearchListResponse
-import com.zvonimirplivelic.githound.util.Constants.FRAGMENT_IMAGE_DIMENSION
-import com.zvonimirplivelic.githound.util.Resource
+import com.zvonimirplivelic.githound.util.Constants.AUTHOR_IMAGE_DIMENSION
 
 class AuthorDetailsFragment : Fragment() {
     private val args by navArgs<AuthorDetailsFragmentArgs>()
@@ -38,8 +32,8 @@ class AuthorDetailsFragment : Fragment() {
         Picasso.get()
             .load(selectedAuthor!!.avatarUrl)
             .resize(
-                FRAGMENT_IMAGE_DIMENSION,
-                FRAGMENT_IMAGE_DIMENSION
+                AUTHOR_IMAGE_DIMENSION,
+                AUTHOR_IMAGE_DIMENSION
             )
             .noFade()
             .into(ivAuthorAvatar)
@@ -51,7 +45,6 @@ class AuthorDetailsFragment : Fragment() {
             browserIntent.data = Uri.parse(selectedAuthor.htmlUrl)
             startActivity(browserIntent)
         }
-
 
         return view
     }

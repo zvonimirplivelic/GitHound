@@ -40,31 +40,34 @@ class RepositoryDetailsFragment : androidx.fragment.app.Fragment() {
         val tvLanguage: TextView = view.findViewById(R.id.tv_language_repo_details)
         val btnOpenRepoDetails: Button = view.findViewById(R.id.btn_open_github_repository)
 
-        tvRepoName.text =
-            resources.getString(R.string.repository_name, selectedRepository!!.name)
+        tvRepoName.text = selectedRepository!!.name
 
         Picasso.get()
             .load(selectedRepository.owner.avatarUrl)
-            .resize(Constants.ADAPTER_IMAGE_DIMENSION, Constants.ADAPTER_IMAGE_DIMENSION)
+            .resize(Constants.REPOSITORY_IMAGE_DIMENSION, Constants.REPOSITORY_IMAGE_DIMENSION)
             .noFade()
             .into(ivAuthorAvatar)
 
         tvAuthorName.text =
             resources.getString(R.string.author_name, selectedRepository.owner.login)
-        tvRepoDescription.text = resources.getString(R.string.repository_description, selectedRepository.description)
+        tvRepoDescription.text =
+            resources.getString(R.string.repository_description, selectedRepository.description)
         tvCreatedAt.text = resources.getString(R.string.created_at, selectedRepository.createdAt)
         tvUpdatedAt.text = resources.getString(R.string.updated_at, selectedRepository.updatedAt)
-        tvNumberOfForks.text = resources.getString(R.string.number_of_forks, selectedRepository.forksCount)
-        tvNumberOfWatchers.text = resources.getString(R.string.number_of_watchers, selectedRepository.watchersCount)
-        tvNumberOfOpenIssues.text = resources.getString(R.string.number_of_open_issues, selectedRepository.openIssuesCount)
+        tvNumberOfForks.text =
+            resources.getString(R.string.number_of_forks, selectedRepository.forksCount)
+        tvNumberOfWatchers.text =
+            resources.getString(R.string.number_of_watchers, selectedRepository.watchersCount)
+        tvNumberOfOpenIssues.text =
+            resources.getString(R.string.number_of_open_issues, selectedRepository.openIssuesCount)
         tvLanguage.text = resources.getString(R.string.language, selectedRepository.language)
 
         tvAuthorName.setOnClickListener {
-            navigateToAuthorDetails(selectedRepository)
+            navigateToAuthorDetails(selectedRepository.owner)
         }
 
         ivAuthorAvatar.setOnClickListener {
-            navigateToAuthorDetails(selectedRepository)
+            navigateToAuthorDetails(selectedRepository.owner)
         }
 
         btnOpenRepoDetails.setOnClickListener {
@@ -75,10 +78,10 @@ class RepositoryDetailsFragment : androidx.fragment.app.Fragment() {
         return view
     }
 
-    private fun navigateToAuthorDetails(selectedRepository: GitSearchListResponse.Item) {
+    private fun navigateToAuthorDetails(selectedOwner: GitSearchListResponse.Item.Owner) {
         val action =
             RepositoryDetailsFragmentDirections.actionRepositoryDetailsFragmentToAuthorDetailsFragment(
-                selectedRepository.owner
+                selectedOwner
             )
         findNavController().navigate(action)
     }
