@@ -1,22 +1,31 @@
 package com.zvonimirplivelic.githound.model
 
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
-class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>(), Parcelable {
-    @Parcelize
-    data class GitRepoResponseItem(
+data class GitSearchListResponse(
+    @SerializedName("incomplete_results")
+    val incompleteResults: Boolean,
+    @SerializedName("items")
+    val items: List<Item>,
+    @SerializedName("total_count")
+    val totalCount: Int
+) {
+    data class Item(
+        @SerializedName("allow_forking")
+        val allowForking: Boolean,
         @SerializedName("archive_url")
         val archiveUrl: String,
+        @SerializedName("archived")
+        val archived: Boolean,
         @SerializedName("assignees_url")
         val assigneesUrl: String,
         @SerializedName("blobs_url")
         val blobsUrl: String,
         @SerializedName("branches_url")
         val branchesUrl: String,
+        @SerializedName("clone_url")
+        val cloneUrl: String,
         @SerializedName("collaborators_url")
         val collaboratorsUrl: String,
         @SerializedName("comments_url")
@@ -29,16 +38,26 @@ class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>()
         val contentsUrl: String,
         @SerializedName("contributors_url")
         val contributorsUrl: String,
+        @SerializedName("created_at")
+        val createdAt: String,
+        @SerializedName("default_branch")
+        val defaultBranch: String,
         @SerializedName("deployments_url")
         val deploymentsUrl: String,
         @SerializedName("description")
-        val description: String?,
+        val description: String,
+        @SerializedName("disabled")
+        val disabled: Boolean,
         @SerializedName("downloads_url")
         val downloadsUrl: String,
         @SerializedName("events_url")
         val eventsUrl: String,
         @SerializedName("fork")
         val fork: Boolean,
+        @SerializedName("forks")
+        val forks: Int,
+        @SerializedName("forks_count")
+        val forksCount: Int,
         @SerializedName("forks_url")
         val forksUrl: String,
         @SerializedName("full_name")
@@ -49,12 +68,28 @@ class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>()
         val gitRefsUrl: String,
         @SerializedName("git_tags_url")
         val gitTagsUrl: String,
+        @SerializedName("git_url")
+        val gitUrl: String,
+        @SerializedName("has_downloads")
+        val hasDownloads: Boolean,
+        @SerializedName("has_issues")
+        val hasIssues: Boolean,
+        @SerializedName("has_pages")
+        val hasPages: Boolean,
+        @SerializedName("has_projects")
+        val hasProjects: Boolean,
+        @SerializedName("has_wiki")
+        val hasWiki: Boolean,
+        @SerializedName("homepage")
+        val homepage: String,
         @SerializedName("hooks_url")
         val hooksUrl: String,
         @SerializedName("html_url")
         val htmlUrl: String,
         @SerializedName("id")
         val id: Int,
+        @SerializedName("is_template")
+        val isTemplate: Boolean,
         @SerializedName("issue_comment_url")
         val issueCommentUrl: String,
         @SerializedName("issue_events_url")
@@ -65,26 +100,46 @@ class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>()
         val keysUrl: String,
         @SerializedName("labels_url")
         val labelsUrl: String,
+        @SerializedName("language")
+        val language: String,
         @SerializedName("languages_url")
         val languagesUrl: String,
+        @SerializedName("license")
+        val license: License,
         @SerializedName("merges_url")
         val mergesUrl: String,
         @SerializedName("milestones_url")
         val milestonesUrl: String,
+        @SerializedName("mirror_url")
+        val mirrorUrl: Any?,
         @SerializedName("name")
         val name: String,
         @SerializedName("node_id")
         val nodeId: String,
         @SerializedName("notifications_url")
         val notificationsUrl: String,
+        @SerializedName("open_issues")
+        val openIssues: Int,
+        @SerializedName("open_issues_count")
+        val openIssuesCount: Int,
         @SerializedName("owner")
         val owner: Owner,
         @SerializedName("private")
         val `private`: Boolean,
         @SerializedName("pulls_url")
         val pullsUrl: String,
+        @SerializedName("pushed_at")
+        val pushedAt: String,
         @SerializedName("releases_url")
         val releasesUrl: String,
+        @SerializedName("score")
+        val score: Int,
+        @SerializedName("size")
+        val size: Int,
+        @SerializedName("ssh_url")
+        val sshUrl: String,
+        @SerializedName("stargazers_count")
+        val stargazersCount: Int,
         @SerializedName("stargazers_url")
         val stargazersUrl: String,
         @SerializedName("statuses_url")
@@ -93,16 +148,40 @@ class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>()
         val subscribersUrl: String,
         @SerializedName("subscription_url")
         val subscriptionUrl: String,
+        @SerializedName("svn_url")
+        val svnUrl: String,
         @SerializedName("tags_url")
         val tagsUrl: String,
         @SerializedName("teams_url")
         val teamsUrl: String,
+        @SerializedName("topics")
+        val topics: List<Any>,
         @SerializedName("trees_url")
         val treesUrl: String,
+        @SerializedName("updated_at")
+        val updatedAt: String,
         @SerializedName("url")
-        val url: String
-    ) : Parcelable {
-        @Parcelize
+        val url: String,
+        @SerializedName("visibility")
+        val visibility: String,
+        @SerializedName("watchers")
+        val watchers: Int,
+        @SerializedName("watchers_count")
+        val watchersCount: Int
+    ) {
+        data class License(
+            @SerializedName("key")
+            val key: String,
+            @SerializedName("name")
+            val name: String,
+            @SerializedName("node_id")
+            val nodeId: String,
+            @SerializedName("spdx_id")
+            val spdxId: String,
+            @SerializedName("url")
+            val url: String
+        )
+
         data class Owner(
             @SerializedName("avatar_url")
             val avatarUrl: String,
@@ -140,6 +219,6 @@ class GitRepoListResponse : ArrayList<GitRepoListResponse.GitRepoResponseItem>()
             val type: String,
             @SerializedName("url")
             val url: String
-        ) : Parcelable
+        )
     }
 }
