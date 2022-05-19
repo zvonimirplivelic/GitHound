@@ -12,27 +12,27 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zvonimirplivelic.githound.R
-import com.zvonimirplivelic.githound.model.GitRepoListResponse
+import com.zvonimirplivelic.githound.model.GitSearchListResponse
 import com.zvonimirplivelic.githound.ui.fragments.RepoSearchListFragmentDirections
 import com.zvonimirplivelic.githound.util.Constants.ADAPTER_IMAGE_DIMENSION
 
-class RepoSearchListAdapter() :
+class RepoSearchListAdapter:
     RecyclerView.Adapter<RepoSearchListAdapter.RepoSearchItemViewHolder>() {
 
     inner class RepoSearchItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     private val diffCallback =
-        object : DiffUtil.ItemCallback<GitRepoListResponse.GitRepoResponseItem>() {
+        object : DiffUtil.ItemCallback<GitSearchListResponse.Item>() {
             override fun areItemsTheSame(
-                oldItem: GitRepoListResponse.GitRepoResponseItem,
-                newItem: GitRepoListResponse.GitRepoResponseItem
+                oldItem: GitSearchListResponse.Item,
+                newItem: GitSearchListResponse.Item
             ): Boolean {
                 return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: GitRepoListResponse.GitRepoResponseItem,
-                newItem: GitRepoListResponse.GitRepoResponseItem
+                oldItem: GitSearchListResponse.Item,
+                newItem: GitSearchListResponse.Item
             ): Boolean {
                 return oldItem == newItem
             }
@@ -52,8 +52,10 @@ class RepoSearchListAdapter() :
 
     override fun onBindViewHolder(holder: RepoSearchItemViewHolder, position: Int) {
         val repositoryItem = differ.currentList[position]
+
         holder.itemView.apply {
             val cvRepoItem: CardView = findViewById(R.id.cv_repo_item)
+            val cvAuthor: CardView = findViewById(R.id.cv_author)
             val ivAuthorAvatar: ImageView = findViewById(R.id.iv_author_avatar)
             val tvAuthorName: TextView = findViewById(R.id.tv_author_name)
             val tvRepositoryName: TextView = findViewById(R.id.tv_repository_name)
@@ -64,13 +66,16 @@ class RepoSearchListAdapter() :
                 .noFade()
                 .into(ivAuthorAvatar)
 
-            tvAuthorName.text =
-                resources.getString(R.string.author_name, repositoryItem.owner.login)
-            tvRepositoryName.text =
-                resources.getString(R.string.repository_name, repositoryItem.name)
+            tvAuthorName.text = repositoryItem.owner.login
+            tvRepositoryName.text = repositoryItem.name
 
-            ivAuthorAvatar.setOnClickListener(navigateToAuthorScreen(repositoryItem))
-            tvAuthorName.setOnClickListener(navigateToAuthorScreen(repositoryItem))
+            cvAuthor.setOnClickListener {
+                val action =
+                    RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment(
+                        repositoryItem.owner
+                    )
+                findNavController().navigate(action)
+            }
 
             cvRepoItem.setOnClickListener {
                 val action =
@@ -83,13 +88,4 @@ class RepoSearchListAdapter() :
     }
 
     override fun getItemCount(): Int = differ.currentList.size
-
-    private fun View.navigateToAuthorScreen(repositoryItem: GitRepoListResponse.GitRepoResponseItem): (View) -> Unit =
-        {
-            val action =
-                RepoSearchListFragmentDirections.actionSearchListFragmentToAuthorDetailsFragment(
-                    repositoryItem
-                )
-            findNavController().navigate(action)
-        }
 }

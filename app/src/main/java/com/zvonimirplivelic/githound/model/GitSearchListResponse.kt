@@ -1,8 +1,11 @@
 package com.zvonimirplivelic.githound.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class GitSearchListResponse(
     @SerializedName("incomplete_results")
     val incompleteResults: Boolean,
@@ -10,7 +13,8 @@ data class GitSearchListResponse(
     val items: List<Item>,
     @SerializedName("total_count")
     val totalCount: Int
-) {
+) : Parcelable {
+    @Parcelize
     data class Item(
         @SerializedName("allow_forking")
         val allowForking: Boolean,
@@ -105,13 +109,13 @@ data class GitSearchListResponse(
         @SerializedName("languages_url")
         val languagesUrl: String,
         @SerializedName("license")
-        val license: License,
+        val license: License?,
         @SerializedName("merges_url")
         val mergesUrl: String,
         @SerializedName("milestones_url")
         val milestonesUrl: String,
         @SerializedName("mirror_url")
-        val mirrorUrl: Any?,
+        val mirrorUrl: String?,
         @SerializedName("name")
         val name: String,
         @SerializedName("node_id")
@@ -155,7 +159,7 @@ data class GitSearchListResponse(
         @SerializedName("teams_url")
         val teamsUrl: String,
         @SerializedName("topics")
-        val topics: List<Any>,
+        val topics: List<String?>,
         @SerializedName("trees_url")
         val treesUrl: String,
         @SerializedName("updated_at")
@@ -168,20 +172,22 @@ data class GitSearchListResponse(
         val watchers: Int,
         @SerializedName("watchers_count")
         val watchersCount: Int
-    ) {
+    ) : Parcelable {
+        @Parcelize
         data class License(
             @SerializedName("key")
-            val key: String,
+            val key: String?,
             @SerializedName("name")
-            val name: String,
+            val name: String?,
             @SerializedName("node_id")
-            val nodeId: String,
+            val nodeId: String?,
             @SerializedName("spdx_id")
-            val spdxId: String,
+            val spdxId: String?,
             @SerializedName("url")
-            val url: String
-        )
+            val url: String?
+        ) : Parcelable
 
+        @Parcelize
         data class Owner(
             @SerializedName("avatar_url")
             val avatarUrl: String,
@@ -219,6 +225,6 @@ data class GitSearchListResponse(
             val type: String,
             @SerializedName("url")
             val url: String
-        )
+        ) : Parcelable
     }
 }

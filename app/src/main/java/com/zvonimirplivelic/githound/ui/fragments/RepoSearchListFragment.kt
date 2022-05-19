@@ -11,14 +11,18 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zvonimirplivelic.githound.GitHoundViewModel
 import com.zvonimirplivelic.githound.R
-import com.zvonimirplivelic.githound.model.GitRepoListResponse
 import com.zvonimirplivelic.githound.ui.RepoSearchListAdapter
 import com.zvonimirplivelic.githound.util.Resource
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 class RepoSearchListFragment : Fragment() {
@@ -29,9 +33,7 @@ class RepoSearchListFragment : Fragment() {
 
     private lateinit var etSearchListQuery: EditText
     private lateinit var progressBar: ProgressBar
-    private lateinit var ibSearchList: ImageButton
-
-    private lateinit var displayedList: MutableList<GitRepoListResponse.GitRepoResponseItem>
+    private lateinit var ibFilterList: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,7 @@ class RepoSearchListFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.rv_repository_list)
         etSearchListQuery = view.findViewById(R.id.et_search_list_query)
-        ibSearchList = view.findViewById(R.id.ib_search_list_button)
+        ibFilterList = view.findViewById(R.id.ib_search_list_button)
         progressBar = view.findViewById(R.id.progress_bar)
 
         repoListAdapter = RepoSearchListAdapter()
@@ -54,10 +56,21 @@ class RepoSearchListFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
         }
 
-        viewModel.getRepositoryList()
+        var job: Job? = null
+        etSearchListQuery.addTextChangedListener { queryString ->
+            job?.cancel()
+            job = MainScope().launch {
+                delay(1000L)
+                queryString?.let {
+                    if (queryString.toString().isNotEmpty()) {
+                        viewModel.getRepositoryList(queryString.toString(), "", "", 30, 1)
+                    }
+                }
+            }
+        }
 
-        ibSearchList.setOnClickListener {
-            filterList(etSearchListQuery.text.toString(), displayedList)
+        ibFilterList.setOnClickListener {
+
         }
 
         viewModel.repositoryList.observe(viewLifecycleOwner) { response ->
@@ -68,8 +81,7 @@ class RepoSearchListFragment : Fragment() {
                     dataLayout.isVisible = true
 
                     response.data?.let { repoList ->
-                        displayedList = repoList
-                        repoListAdapter.differ.submitList(repoList)
+                        repoListAdapter.differ.submitList(repoList.items)
                     }
                 }
 
@@ -91,29 +103,5 @@ class RepoSearchListFragment : Fragment() {
 
         }
         return view
-    }
-
-    private fun filterList(
-        queryString: String,
-        repoList: MutableList<GitRepoListResponse.GitRepoResponseItem>
-    ) {
-        val listSearch: MutableList<GitRepoListResponse.GitRepoResponseItem> = mutableListOf()
-
-        if (queryString.isBlank()) {
-            repoListAdapter.differ.submitList(repoList)
-        } else {
-            repoList.forEach { repoItem ->
-
-                val queryTerm = queryString.lowercase(Locale.ROOT)
-                val repoName = repoItem.name.lowercase(Locale.ROOT)
-
-                if (repoName.contains(queryTerm))
-                    listSearch.add(repoItem)
-            }
-            if (listSearch.size == 0) {
-                Toast.makeText(requireContext(), "No results found", Toast.LENGTH_SHORT).show()
-            }
-            repoListAdapter.differ.submitList(listSearch)
-        }
     }
 }
