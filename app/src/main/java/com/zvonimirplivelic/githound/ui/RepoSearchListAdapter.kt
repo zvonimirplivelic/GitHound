@@ -64,12 +64,12 @@ class RepoSearchListAdapter :
             val tvOpenIssuesCount: TextView = findViewById(R.id.tv_open_issues_count)
 
             Picasso.get()
-                .load(repositoryItem.owner.avatarUrl)
+                .load(repositoryItem.owner!!.avatarUrl)
                 .resize(ADAPTER_IMAGE_DIMENSION, ADAPTER_IMAGE_DIMENSION)
                 .noFade()
                 .into(ivAuthorAvatar)
 
-            tvAuthorName.text = repositoryItem.owner.login
+            tvAuthorName.text = repositoryItem.owner!!.login
             tvRepositoryName.text = repositoryItem.name
             tvForksCount.text =
                 resources.getString(R.string.number_of_forks, repositoryItem.forksCount)

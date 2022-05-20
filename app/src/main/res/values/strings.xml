@@ -22,4 +22,5 @@
     <string name="repository_name_details">Repository: %1s</string>
     <string name="open_author_profile_btn">Open author profile</string>
     <string name="filter_search_btn">Filter git repositories button</string>
+    <string name="no_results_found_string">No results found</string>
 </resources>

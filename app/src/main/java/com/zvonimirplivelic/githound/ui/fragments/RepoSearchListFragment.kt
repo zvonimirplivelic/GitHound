@@ -5,11 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.*
 import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -24,7 +20,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 
 class RepoSearchListFragment : Fragment() {
     private lateinit var viewModel: GitHoundViewModel
@@ -34,6 +29,8 @@ class RepoSearchListFragment : Fragment() {
     private lateinit var etSearchListQuery: EditText
     private lateinit var progressBar: ProgressBar
     private lateinit var ibFilterList: ImageButton
+    private lateinit var tvEmptyList: TextView
+    private lateinit var tvEmptySearchString: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,6 +44,8 @@ class RepoSearchListFragment : Fragment() {
         etSearchListQuery = view.findViewById(R.id.et_search_list_query)
         ibFilterList = view.findViewById(R.id.ib_search_list_button)
         progressBar = view.findViewById(R.id.progress_bar)
+        tvEmptyList = view.findViewById(R.id.tv_empty_list)
+        tvEmptySearchString = view.findViewById(R.id.tv_empty_search_string)
 
         repoListAdapter = RepoSearchListAdapter()
         recyclerView.apply {
@@ -60,11 +59,15 @@ class RepoSearchListFragment : Fragment() {
             job = MainScope().launch {
                 delay(1000L)
                 queryString?.let {
-                    if (queryString.toString().isNotEmpty() && recyclerView.isEmpty()) {
-
-                        // empty recycler image
-
+                    if (queryString.toString().isNotEmpty()) {
                         viewModel.getRepositoryList(queryString.toString(), "", "", 30, 1)
+                        tvEmptySearchString.visibility = View.GONE
+                        tvEmptyList.visibility = View.GONE
+                        recyclerView.visibility = View.VISIBLE
+                    } else {
+                        tvEmptySearchString.visibility = View.VISIBLE
+                        tvEmptyList.visibility = View.GONE
+                        recyclerView.visibility = View.GONE
                     }
                 }
             }
@@ -79,14 +82,21 @@ class RepoSearchListFragment : Fragment() {
             when (response) {
                 is Resource.Success -> {
                     progressBar.isVisible = false
+                    tvEmptySearchString.isVisible = false
 
                     response.data?.let { repoList ->
+                        if(repoList.items.isEmpty()) {
+                            tvEmptyList.visibility = View.VISIBLE
+                        } else {
+                            tvEmptyList.visibility = View.GONE
+                        }
                         repoListAdapter.differ.submitList(repoList.items)
                     }
                 }
 
                 is Resource.Error -> {
                     progressBar.isVisible = false
+                    tvEmptySearchString.isVisible = false
 
                     response.message?.let { message ->
                         Toast.makeText(activity, "An error occured: $message", Toast.LENGTH_LONG)
@@ -95,7 +105,8 @@ class RepoSearchListFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
-                    progressBar.isVisible = true
+                        progressBar.isVisible = true
+                        tvEmptySearchString.isVisible = false
                 }
             }
 

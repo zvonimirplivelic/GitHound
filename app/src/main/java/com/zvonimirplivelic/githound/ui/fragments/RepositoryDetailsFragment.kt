@@ -43,7 +43,7 @@ class RepositoryDetailsFragment : androidx.fragment.app.Fragment() {
         tvRepoName.text = selectedRepository!!.name
 
         Picasso.get()
-            .load(selectedRepository.owner.avatarUrl)
+            .load(selectedRepository.owner!!.avatarUrl)
             .resize(Constants.REPOSITORY_IMAGE_DIMENSION, Constants.REPOSITORY_IMAGE_DIMENSION)
             .noFade()
             .into(ivAuthorAvatar)
