@@ -1,17 +1,17 @@
 package com.zvonimirplivelic.githound.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.zvonimirplivelic.githound.GitHoundViewModel
 import com.zvonimirplivelic.githound.R
 import com.zvonimirplivelic.githound.ui.RepoSearchListAdapter
@@ -20,6 +20,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.nio.file.Files.delete
+
 
 class RepoSearchListFragment : Fragment() {
     private lateinit var viewModel: GitHoundViewModel
@@ -74,7 +76,7 @@ class RepoSearchListFragment : Fragment() {
         }
 
         ibFilterList.setOnClickListener {
-
+            showBottomSheet()
         }
 
         viewModel.repositoryList.observe(viewLifecycleOwner) { response ->
@@ -112,5 +114,13 @@ class RepoSearchListFragment : Fragment() {
 
         }
         return view
+    }
+
+    private fun showBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_filter_dialog)
+
+
+        bottomSheetDialog.show()
     }
 }
