@@ -28,7 +28,6 @@
             android:id="@+id/rb_none"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:text="None"
             android:textSize="12sp" />
 
@@ -42,6 +41,7 @@
         <RadioButton
             android:id="@+id/rb_watchers"
             android:layout_width="wrap_content"
+            android:checked="true"
             android:layout_height="wrap_content"
             android:text="Watchers"
             android:textSize="12sp" />
@@ -78,7 +78,6 @@
             android:id="@+id/rb_ascending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:text="Ascending"
             android:textSize="12sp" />
 
@@ -86,6 +85,7 @@
             android:id="@+id/rb_descending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="Descending"
             android:textSize="12sp" />
     </RadioGroup>

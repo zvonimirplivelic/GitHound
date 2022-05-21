@@ -9,21 +9,25 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.zvonimirplivelic.githound.GitHoundViewModel
 import com.zvonimirplivelic.githound.R
+import com.zvonimirplivelic.githound.model.QueryFilterParameter
 import com.zvonimirplivelic.githound.ui.RepoSearchListAdapter
 import com.zvonimirplivelic.githound.util.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.nio.file.Files.delete
+import timber.log.Timber
 
 
 class RepoSearchListFragment : Fragment() {
+    private val args by navArgs<RepoSearchListFragmentArgs>()
+
     private lateinit var viewModel: GitHoundViewModel
     private lateinit var repoListAdapter: RepoSearchListAdapter
     private lateinit var recyclerView: RecyclerView
@@ -39,6 +43,9 @@ class RepoSearchListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_search_list, container, false)
+
+        val queryParams: QueryFilterParameter? = args.queryFilterParameters
+        Timber.d("SEARCH_ARGS: sort${queryParams?.sortBy} order${queryParams?.orderBy} rpp${queryParams?.resultsPerPage} pno${queryParams?.pageNumber}")
 
         viewModel = ViewModelProvider(this)[GitHoundViewModel::class.java]
 
@@ -62,7 +69,13 @@ class RepoSearchListFragment : Fragment() {
                 delay(1000L)
                 queryString?.let {
                     if (queryString.toString().isNotEmpty()) {
-                        viewModel.getRepositoryList(queryString.toString(), "", "", 30, 1)
+                        viewModel.getRepositoryList(
+                            queryString.toString(),
+                            queryParams?.sortBy,
+                            queryParams?.orderBy,
+                            queryParams?.resultsPerPage,
+                            queryParams?.pageNumber
+                        )
                         tvEmptySearchString.visibility = View.GONE
                         tvEmptyList.visibility = View.GONE
                         recyclerView.visibility = View.VISIBLE
@@ -87,7 +100,7 @@ class RepoSearchListFragment : Fragment() {
                     tvEmptySearchString.isVisible = false
 
                     response.data?.let { repoList ->
-                        if(repoList.items.isEmpty()) {
+                        if (repoList.items.isEmpty()) {
                             tvEmptyList.visibility = View.VISIBLE
                         } else {
                             tvEmptyList.visibility = View.GONE
@@ -107,8 +120,8 @@ class RepoSearchListFragment : Fragment() {
                 }
 
                 is Resource.Loading -> {
-                        progressBar.isVisible = true
-                        tvEmptySearchString.isVisible = false
+                    progressBar.isVisible = true
+                    tvEmptySearchString.isVisible = false
                 }
             }
 
@@ -117,10 +130,6 @@ class RepoSearchListFragment : Fragment() {
     }
 
     private fun showBottomSheet() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_filter_dialog)
-
-
-        bottomSheetDialog.show()
+        findNavController().navigate(R.id.action_searchListFragment_to_bottomSheetFilterFragment)
     }
 }

@@ -24,21 +24,21 @@ class GitHoundViewModel(app: Application) : AndroidViewModel(app) {
     private var repositoryListDataResponse: GitSearchListResponse? = null
 
     fun getRepositoryList(
-        name: String,
-        sortBy: String,
-        sortOrder: String,
-        resultsPerPage: Int,
-        page: Int
+        name: String?,
+        sortBy: String?,
+        sortOrder: String?,
+        resultsPerPage: Int?,
+        page: Int?
     ) = viewModelScope.launch {
         safeRemoteRepositoryListCall(name, sortBy, sortOrder, resultsPerPage, page)
     }
 
     private suspend fun safeRemoteRepositoryListCall(
-        name: String,
-        sortBy: String,
-        sortOrder: String,
-        resultsPerPage: Int,
-        page: Int
+        name: String?,
+        sortBy: String?,
+        sortOrder: String?,
+        resultsPerPage: Int?,
+        page: Int?
     ) {
         repositoryList.postValue(Resource.Loading())
         try {
