@@ -11,8 +11,9 @@
         android:label="Author details"
         tools:layout="@layout/fragment_author_details" >
         <argument
-            android:name="currentRepository"
-            app:argType="com.zvonimirplivelic.githound.model.GitRepoListResponse$GitRepoResponseItem" />
+            android:name="selectedOwner"
+            app:argType="com.zvonimirplivelic.githound.model.GitSearchListResponse$Item$Owner"
+            app:nullable="true" />
     </fragment>
 
     <fragment
@@ -26,6 +27,14 @@
         <action
             android:id="@+id/action_searchListFragment_to_authorDetailsFragment"
             app:destination="@id/authorDetailsFragment" />
+        <argument
+            android:name="queryFilterParameters"
+            app:argType="com.zvonimirplivelic.githound.model.QueryFilterParameter"
+            app:nullable="true"
+            android:defaultValue="@null"/>
+        <action
+            android:id="@+id/action_searchListFragment_to_bottomSheetFilterFragment"
+            app:destination="@id/bottomSheetFilterFragment" />
     </fragment>
 
     <fragment
@@ -37,7 +46,16 @@
             android:id="@+id/action_repositoryDetailsFragment_to_authorDetailsFragment"
             app:destination="@id/authorDetailsFragment" />
         <argument
-            android:name="currentRepository"
-            app:argType="com.zvonimirplivelic.githound.model.GitRepoListResponse$GitRepoResponseItem" />
+            android:name="selectedRepository"
+            app:argType="com.zvonimirplivelic.githound.model.GitSearchListResponse$Item"
+            app:nullable="true" />
     </fragment>
+    <dialog
+        android:id="@+id/bottomSheetFilterFragment"
+        android:name="com.zvonimirplivelic.githound.ui.fragments.BottomSheetFilterFragment"
+        android:label="BottomSheetFilterFragment" >
+        <action
+            android:id="@+id/action_bottomSheetFilterFragment_to_searchListFragment"
+            app:destination="@id/searchListFragment" />
+    </dialog>
 </navigation>
